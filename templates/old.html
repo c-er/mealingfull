@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Flask-SocketIO Test</title>
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+            namespace = '';
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+            var old = "";
+
+            //var canvas = document.getElementById("cvs");
+            //var ctx = canvas.getContext("2d");
+
+            socket.on('food_type', function(msg) {
+                foodlist = msg.food;
+                $("#foodz").empty();
+                for(var i = 0; i < foodlist.length; i++) {
+                  $("#foodz").append("<li>" + foodlist[i] + "</li>");
+                }
+                // $("#log").html(msg.image);
+                if(msg.image) {
+                  console.log("got image");
+                  if(old != msg.image) {
+                    old = msg.image;
+                    console.log("got new image");
+                  }
+                  d = new Date()
+                  $("#pic").removeAttr("src").attr("src", msg.image + "?" + d.getTime());
+                  $("#pic").hide()
+                  $("#pic").show()
+                  $("body").toggleClass("refresh");
+                  /*// console.log(msg.image);
+                  var img = new Image();
+                  img.onload = function() {
+                    console.log("drew image");
+                    console.log(img.src.length);
+                    ctx.drawImage(this, 0, 0, canvas.width, canvas.height);
+                  };
+                  img.src = 'data:image/jpeg;base64,' + msg.image;
+                  ctx.clearRect(0, 0, canvas.width, canvas.height);*/
+                }
+            });
+
+            // event handler for server sent data
+            // the data is displayed in the "Received" section of the page
+            // handlers for the different forms in the page
+            // these send data to the server in a variety of ways
+
+        });
+    </script>
+</head>
+<body>
+    <h1>Flask-SocketIO Test</h1>
+    <h2>Send:</h2>
+    <h2>Receive:</h2>
+    <ul id="foodz">
+    </ul>
+    <div><p id="log"></p></div>
+    <div id="display">
+      <img id="pic"></img>
+    </div>
+    <!--<canvas width="640" height="480" id="cvs"></canvas>-->
+</body>
+</html>
